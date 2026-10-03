@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+requests
+python-dotenv
+langchain-openai
+langchain-core
+langgraph
+pydantic
+pandas
+openpyxl
+tortoise-orm
+aiomysql
