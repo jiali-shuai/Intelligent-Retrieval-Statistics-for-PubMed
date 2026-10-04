@@ -9,7 +9,6 @@ from langchain_core.messages import AIMessage, HumanMessage
 from agent.llm import LLMError, parse_json
 from agent.prompt_loader import load_prompt
 from agent.tools import WORKSPACE, get_review_materials
-from config import TOP_PAPERS
 
 LABEL = "综述撰写员"
 PROMPT_FILE = "review.txt"
@@ -25,8 +24,9 @@ class ReviewAgent:
 
     def run(self, state: dict[str, Any]) -> dict[str, Any]:
         recent_years = state.get("recent_years", 5)
+        top_n = state.get("top_n", 100)
 
-        bullets = self._run_agent(state, recent_years)
+        bullets = self._run_agent(state, recent_years, top_n)
         if not bullets:
             raise LLMError("综述撰写员返回结果无法解析")
 
@@ -49,13 +49,13 @@ class ReviewAgent:
         }
 
     def _run_agent(
-        self, state: dict[str, Any], recent_years: int
+        self, state: dict[str, Any], recent_years: int, top_n: int
     ) -> list[dict[str, str]] | None:
         """由大模型调用工具获取材料并撰写综述"""
         user_input = (
             f"关键词：{state['keyword']}\n"
             f"近 N 年：{recent_years}\n"
-            f"top_n：{TOP_PAPERS}\n"
+            f"top_n：{top_n}\n"
             f"请调用 get_review_materials 后按系统提示输出规定 JSON 数组。"
         )
         try:

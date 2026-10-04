@@ -13,7 +13,7 @@ http.interceptors.response.use(
   },
 )
 
-/** 一站式文献分析：关键词 -> 检索 -> 统计 / 词云 / 方向 / Top100 / 综述 */
+/** 一站式文献分析：关键词 -> 检索 -> 统计 / 词云 / 方向 / Top N / 综述 */
 export function runAnalysis(payload) {
   return http.post('/analysis/run', payload)
 }

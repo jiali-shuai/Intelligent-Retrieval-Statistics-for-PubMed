@@ -45,6 +45,18 @@
             placeholder="10-500篇"
           />
         </label>
+        <label class="field">
+          <span class="field-label">Top 篇数</span>
+          <input
+            v-model.number="topPapers"
+            class="field-input"
+            type="number"
+            min="10"
+            max="500"
+            step="10"
+            placeholder="10-500篇"
+          />
+        </label>
         <button class="btn btn-primary" :disabled="loading || !canRun">
           {{ loading ? '分析中…' : '开始分析' }}
         </button>
@@ -82,23 +94,25 @@ export default {
     const keyword = ref('')
     const recentYears = ref(null)   // 留空则用后端默认值
     const maxFetch = ref(null)      // 留空则用后端默认值
+    const topPapers = ref(null)     // 留空则用后端默认值
     const loading = ref(false)
     const error = ref('')
     const result = ref(null)
 
-    // 关键词必填；年份、解析篇数可留空（走默认），填写则需在合法范围内
+    // 关键词必填；年份、解析篇数、Top 篇数可留空（走默认），填写则需在合法范围内
     const canRun = computed(
       () =>
         !!keyword.value.trim() &&
         (recentYears.value == null || (recentYears.value >= 1 && recentYears.value <= 10)) &&
-        (maxFetch.value == null || (maxFetch.value >= 10 && maxFetch.value <= 500))
+        (maxFetch.value == null || (maxFetch.value >= 10 && maxFetch.value <= 500)) &&
+        (topPapers.value == null || (topPapers.value >= 10 && topPapers.value <= 500))
     )
 
     const features = [
       { label: '检索', desc: 'PubMed 关键词检索' },
       { label: '统计', desc: '年份 · 分区 · IF 分布' },
       { label: '热点', desc: '关键词与 MeSH 词云' },
-      { label: 'Top', desc: '高影响力文献 Top100' },
+      { label: 'Top', desc: '高影响力文献 Top N' },
       { label: '综述', desc: 'DeepSeek 智能综述' },
     ]
 
@@ -111,6 +125,7 @@ export default {
         const payload = { keyword: kw }
         if (recentYears.value != null) payload.recent_years = recentYears.value
         if (maxFetch.value != null) payload.max_fetch = maxFetch.value
+        if (topPapers.value != null) payload.top_papers = topPapers.value
         result.value = await runAnalysis(payload)
       } catch (e) {
         error.value = e.message
@@ -120,7 +135,7 @@ export default {
       }
     }
 
-    return { keyword, recentYears, maxFetch, loading, error, result, run, canRun, features }
+    return { keyword, recentYears, maxFetch, topPapers, loading, error, result, run, canRun, features }
   },
 }
 </script>

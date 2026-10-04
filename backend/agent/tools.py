@@ -89,7 +89,7 @@ def get_review_materials(recent_years: int, top_n: int = 100) -> str:
             "journal": p.get("journal"),
             "year": p.get("year"),
             "if": p.get("impact_factor"),
-            "abstract": (p.get("abstract") or "").replace("\n", " ")[:280],
+            "abstract": (p.get("abstract") or "").replace("\n", " "),
         }
         for p in papers[:30]
     ]

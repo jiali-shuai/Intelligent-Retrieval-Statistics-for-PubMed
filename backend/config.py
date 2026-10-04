@@ -31,11 +31,6 @@ DEEPSEEK_MODEL = get_env_opt("DEEPSEEK_MODEL", "deepseek-flash")
 # 深度思考强度（low/high/max），仅综述撰写环节开启；其余环节关闭思考以提速
 DEEPSEEK_THINKING_EFFORT = get_env_opt("DEEPSEEK_THINKING_EFFORT", "high")
 
-# ---------- 检索参数 ----------
-MAX_FETCH = int(get_env_opt("MAX_FETCH", "300"))     # 单次最多解析文献数
-RECENT_YEARS = int(get_env_opt("RECENT_YEARS", "5"))  # “近 N 年”口径
-TOP_PAPERS = int(get_env_opt("TOP_PAPERS", "100"))    # 影响力 Top 文献数量
-
 # ---------- MySQL 数据库配置（可选，未配置 DB_HOST/DB_NAME 则跳过入库） ----------
 DB_HOST = get_env_opt("DB_HOST")
 DB_PORT = int(get_env_opt("DB_PORT", "3306"))

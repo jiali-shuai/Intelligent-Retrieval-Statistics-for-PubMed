@@ -1,5 +1,5 @@
 """
-文献分析接口：关键词 -> PubMed 检索 -> 统计分析 / 词云 / 方向 / Top100 / 综述
+文献分析接口：关键词 -> PubMed 检索 -> 统计分析 / 词云 / 方向 / Top N / 综述
 """
 import datetime
 
@@ -8,7 +8,6 @@ from pydantic import BaseModel, Field
 
 from agent.agent import ResearchOrchestrator
 from agent.llm import LLMError, is_available as llm_available
-from config import MAX_FETCH, RECENT_YEARS
 from db import repository
 from pubmed.eutils import PubMedError, is_available as pubmed_available
 
@@ -18,11 +17,17 @@ AI_ERROR_MSG = "AI 出错，请稍后重试。"
 PUBMED_ERROR_MSG = "PubMed 请求失败，请稍后再试。"
 PUBMED_NO_KEY_MSG = "未配置 PubMed API Key（NCBI_API_KEY），无法发起检索。"
 
+# 检索参数默认值（均由前端页面填值控制）
+DEFAULT_RECENT_YEARS = 5     # “近 N 年”口径
+DEFAULT_MAX_FETCH = 300      # 单次最多解析的文献数
+DEFAULT_TOP_PAPERS = 100     # 影响力 Top 文献数量
+
 
 class AnalysisRequest(BaseModel):
     keyword: str = Field(..., min_length=1, description="检索关键词，支持中文/英文")
-    recent_years: int = Field(RECENT_YEARS, ge=1, le=10, description="“近 N 年”口径（1-10）")
-    max_fetch: int = Field(MAX_FETCH, ge=1, le=500, description="最多解析的文献数")
+    recent_years: int = Field(DEFAULT_RECENT_YEARS, ge=1, le=10, description="“近 N 年”口径（1-10）")
+    max_fetch: int = Field(DEFAULT_MAX_FETCH, ge=1, le=500, description="最多解析的文献数")
+    top_papers: int = Field(DEFAULT_TOP_PAPERS, ge=1, le=500, description="高影响力 Top 文献数量")
 
 
 @router.post("/api/analysis/run")
@@ -40,7 +45,7 @@ def run_analysis(req: AnalysisRequest):
 
     try:
         orchestrator = ResearchOrchestrator()
-        result = orchestrator.invoke(keyword, req.recent_years, req.max_fetch)
+        result = orchestrator.invoke(keyword, req.recent_years, req.max_fetch, req.top_papers)
     except PubMedError:
         raise HTTPException(status_code=503, detail=PUBMED_ERROR_MSG)
     except LLMError:

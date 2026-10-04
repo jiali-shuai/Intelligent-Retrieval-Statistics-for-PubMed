@@ -22,6 +22,7 @@ class ResearchState(TypedDict, total=False):
     keyword: str                    # 用户原始关键词
     recent_years: int               # “近 N 年”口径
     max_fetch: int                  # 最多解析的文献数
+    top_n: int                      # 高影响力 Top 文献数量
     query_info: dict[str, Any]      # {"original","translated","query","source"}
     retrieval_round: int            # 已完成的检索轮次
     total_hits: int                 # 命中总数
@@ -155,12 +156,13 @@ class ResearchOrchestrator:
 
         return graph.compile()
 
-    def invoke(self, keyword: str, recent_years: int, max_fetch: int) -> dict[str, Any]:
+    def invoke(self, keyword: str, recent_years: int, max_fetch: int, top_n: int) -> dict[str, Any]:
         """执行一次完整编排"""
         initial: ResearchState = {
             "keyword": keyword,
             "recent_years": recent_years,
             "max_fetch": max_fetch,
+            "top_n": top_n,
             "retrieval_round": 0,
             "trace": [],
         }
