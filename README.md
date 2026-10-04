@@ -166,9 +166,6 @@ npm run dev
 | `DEEPSEEK_BASE_URL` | 否 | `https://api.deepseek.com/v1` | API 地址 |
 | `DEEPSEEK_MODEL` | 否 | `deepseek-flash` | 模型名称 |
 | `DEEPSEEK_THINKING_EFFORT` | 否 | `high` | 深度思考强度：`low` / `high` / `max`，仅综述环节启用 |
-| `MAX_FETCH` | 否 | `300` | 单次最多解析文献数 |
-| `RECENT_YEARS` | 否 | `5` | 「近 N 年」默认口径 |
-| `TOP_PAPERS` | 否 | `100` | 影响力 Top 文献数量 |
 | `DB_HOST` | 否 | - | MySQL 主机，留空则**跳过入库** |
 | `DB_PORT` | 否 | `3306` | MySQL 端口 |
 | `DB_USER` | 否 | - | MySQL 用户 |
